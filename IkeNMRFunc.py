@@ -15,7 +15,7 @@ def exp(n): return cmath.exp(n)
 def expm(n): return sp.linalg.expm(n)
 def trace(n): return np.trace(n)
 
-def Wig(theta):
+def Wig(I,theta):
     mp_a = np.linspace(-I,I,int(2*I+1))
     m_a  = np.linspace(-I,I,int(2*I+1))
     s_a = np.linspace(0,2*I,int(2*I+1))
