@@ -33,7 +33,7 @@ def Wig(I,theta):
     return d
 
 def LVN(R,M): return np.matmul(np.matmul(R,M),np.linalg.inv(R))
-def SAND(R1,M,R2): return np.matmul(np.matmul(R,M),np.linalg.inv(R))
+def SAND(R1,M,R2): return np.matmul(np.matmul(R,M),R2)
 #Generating Pauli Matrices for a given spin state I
 def PauliMatrices(I):
     j_a = np.linspace(-I,I-1,int(2*I))
