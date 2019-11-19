@@ -1,1 +1,1 @@
-# WignerD
+# Useful functions for DMF for NMR
