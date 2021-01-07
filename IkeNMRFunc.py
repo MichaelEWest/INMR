@@ -35,7 +35,7 @@ def Wig(I,theta):
 
 
 thetaS = symbols('thetaS')
-def WigSym(I,theta):
+def WigSym(I,thetaS):
     mp_a = np.linspace(-I,I,int(2*I+1))
     m_a  = np.linspace(-I,I,int(2*I+1))
     s_a = np.linspace(0,2*I,int(2*I+1))
@@ -46,8 +46,8 @@ def WigSym(I,theta):
             for s in s_a:
                 if I+m-s >=0 and s >=0 and mp-m+s >=0 and I-mp-s >=0:
                     B = ((-1)**(s)*sqrt(fact(I+mp)*fact(I-mp)*fact(I+m)*fact(I-m)))/(fact(I+m-s)*fact(s)*fact(mp-m+s)*fact(I-mp-s))
-                    C = (cos(theta/2))**(2*I+m-mp-(2*s))
-                    D = (sin(theta/2))**(mp-m+(2*s))
+                    C = (cos(thetaS/2))**(2*I+m-mp-(2*s))
+                    D = (sin(thetaS/2))**(mp-m+(2*s))
                     sum = sum+B*exp(-1*1j*np.pi/2*mp)*C*D*exp(1j*np.pi/2*mp)
             d[int(mp+I),int(m+I)] = sum
     return d
