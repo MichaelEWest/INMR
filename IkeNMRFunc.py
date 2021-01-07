@@ -33,26 +33,6 @@ def Wig(I,theta):
             d[int(mp+I),int(m+I)] = sum
     return d
 
-
-thetaS = symbols('thetaS')
-def WigSym(I,thetaS):
-    mp_a = np.linspace(-I,I,int(2*I+1))
-    m_a  = np.linspace(-I,I,int(2*I+1))
-    s_a = np.linspace(0,2*I,int(2*I+1))
-    d = np.zeros((int(2*I+1),int(2*I+1)))+1j*np.zeros((int(2*I+1),int(2*I+1)))
-    for mp in mp_a:
-        for m in m_a:
-            sum = 0
-            for s in s_a:
-                if I+m-s >=0 and s >=0 and mp-m+s >=0 and I-mp-s >=0:
-                    B = ((-1)**(s)*sqrt(fact(I+mp)*fact(I-mp)*fact(I+m)*fact(I-m)))/(fact(I+m-s)*fact(s)*fact(mp-m+s)*fact(I-mp-s))
-                    C = (cos(thetaS/2))**(2*I+m-mp-(2*s))
-                    D = (sin(thetaS/2))**(mp-m+(2*s))
-                    sum = sum+B*exp(-1*1j*np.pi/2*mp)*C*D*exp(1j*np.pi/2*mp)
-            d[int(mp+I),int(m+I)] = sum
-    return d
-
-
 def LVN(R,M): return np.matmul(np.matmul(R,M),np.linalg.inv(R))
 def SAND(R1,M,R2): return np.matmul(np.matmul(R,M),R2)
 #Generating Pauli Matrices for a given spin state I
