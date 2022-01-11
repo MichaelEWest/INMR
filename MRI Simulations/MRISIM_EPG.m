@@ -45,10 +45,10 @@ GFE = -3;
 GPEmax = 3;
 GFEwind = 3;
 
-N_PE = 32;   %Number of phase encodes
-N_RO = 32;   %Number of readout points
+N_PE = 73;   %Number of phase encodes
+N_RO = 73;   %Number of readout points
 ImageSize = 16;  %"size" of image, cm
-IMS = 32;      %Number of pixels per side of square image
+IMS = 73;      %Number of pixels per side of square image
 Del_y = 0.1; %Spatial resolution of voxels, cm
 gratio = 4248; %Gyromagnetic ratio, Hz/G
 
@@ -61,8 +61,8 @@ birb = imresize(birb,IMS/512);
 T1map = double(birb)/256*T1scale;
 T2map = double(catt)/256*T2scale;
 
-Del_ky = 1/(N_PE*Del_y);  %k-space voxel spacing
-ky_max = 1/2*(N_PE-1)*Del_ky;  %cm^-1
+%Del_ky = 1/(N_PE*Del_y);  %k-space voxel spacing
+%ky_max = 1/2*(N_PE-1)*Del_ky;  %cm^-1
 %Tau_PE = ky_max/gratio/G_max;  %Phase encode time 
 
 %Tau_RO = -2*Tau_PE*GFEwind/GFE;
@@ -71,32 +71,37 @@ res = ImageSize/IMS; %cm/pixel
 resG = gratio*G_max*res; %Hz/pixel
 windtime = (resG)^-1;  %Amount of time to wind the most-central voxels by 1 integer twist
 
-Q0 = zeros(3,17,N_PE,N_RO);
-Q1 = zeros(3,17,N_PE,N_RO);
-Q2 = zeros(3,17,N_PE,N_RO);
-Q0(3,1,:,:) = 1;
-for mm = 1:1:N_PE
-    for nn =1:1:N_RO
-        Q1(:,:,mm,nn) = Ry(pi/2)*Q0(:,:,mm,nn);
+Q0 = zeros(N_PE,N_RO);
+Q1 = Q0;
+%PHASE ENCODE GRADIENT
+
+if rem(N_PE,2) == 0
+    for mm = 1:1:N_PE/2
+        Q1(mm,:) = Q0(mm,:)+mm-N_PE/2-1;
+    end
+    for mm = N_PE/2+1:1:N_PE
+       Q1(mm,:) = Q0(mm,:)+mm-N_PE/2;
+    end
+else
+    for mm=1:1:N_PE
+        Q1(mm,:) = Q0(mm,:)+mm-(N_PE+1)/2;
     end
 end
 
-%PHASE ENCODE GRADIENT (3rd dimension)
-for mm = 1:1:8
-   Q2(2,10-mm,mm,:)= Q1(1,1,mm,:);
+%FREQ ENCODE GRADIENT
+
+if rem(N_RO,2) == 0
+    for nn = 1:1:N_RO/2
+        Q2(:,nn) = Q1(:,nn)+nn-N_RO/2-1;
+    end
+    for nn = N_RO/2+1:1:N_RO
+       Q2(:,nn) = Q1(:,nn)+nn-N_RO/2;
+    end
+else
+    for nn=1:1:N_RO
+        Q2(:,nn) = Q1(:,nn)+nn-(N_RO+1)/2;
+    end
 end
-for mm = 9:1:16
-   Q2(1,mm+1-8,mm,:)= Q1(1,1,mm,:);
-end
-%unit gradient 
-test1 =-8:-1;
-test2 =1:8;
-test = cat(2,test1,test2);
-
-%First phase encode half
-Q2(2,8) = Q1(1,1);
-
-
 %%
 function val = xGrad(rho,ImageSize,IMS,thetam)  
     for mm = 1:1:IMS
